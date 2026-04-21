@@ -2,6 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Funcionario extends Pessoa {
     private BigDecimal salario;
@@ -9,8 +10,8 @@ public class Funcionario extends Pessoa {
 
     public Funcionario(String nome, LocalDate dataNascimento, BigDecimal salario, String funcao) {
         super(nome, dataNascimento);
-        this.salario = salario;
-        this.funcao = funcao;
+        setSalario(salario);
+        setFuncao(funcao);
     }
 
     public BigDecimal getSalario() {
@@ -18,7 +19,13 @@ public class Funcionario extends Pessoa {
     }
 
     public void setSalario(BigDecimal salario) {
-        this.salario = salario;
+        Objects.requireNonNull(salario, "Salário não pode ser nulo");
+
+        if (salario.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Salário não pode ser negativo");
+        }
+
+        this.salario = salario.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     public String getFuncao() {
@@ -26,6 +33,9 @@ public class Funcionario extends Pessoa {
     }
 
     public void setFuncao(String funcao) {
+        if (funcao == null || funcao.isBlank()) {
+            throw new IllegalArgumentException("Função não pode ser vazia");
+        }
         this.funcao = funcao;
     }
 }
