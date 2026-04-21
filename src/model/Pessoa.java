@@ -1,14 +1,15 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-abstract class Pessoa {
+public abstract class Pessoa {
     private String nome;
     private LocalDate dataNascimento;
 
     public Pessoa(String nome, LocalDate dataNascimento) {
-        this.nome = nome;
-        this.dataNascimento = dataNascimento;
+        setNome(nome);
+        setDataNascimento(dataNascimento);
     }
 
     public String getNome() {
@@ -16,6 +17,9 @@ abstract class Pessoa {
     }
 
     public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome não pode ser vazio");
+        }
         this.nome = nome;
     }
 
@@ -24,6 +28,12 @@ abstract class Pessoa {
     }
 
     public void setDataNascimento(LocalDate dataNascimento) {
+        Objects.requireNonNull(dataNascimento, "Data de nascimento não pode ser nula");
+
+        if (dataNascimento.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Data de nascimento não pode estar no futuro");
+        }
+
         this.dataNascimento = dataNascimento;
     }
 }
